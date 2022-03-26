@@ -23,14 +23,23 @@ let { features, labels, testFeatures, testLabels } = loadCSV(
   {
     shuffle: true,
     splitTest: 10,
-    dataColumns: ['lat', 'long'],
+    dataColumns: ['lat', 'long', 'sqft_lot'],
     labelColumns: ['price'],
   }
 );
 
+console.log('Test features', testFeatures);
+console.log('Test labels', testLabels);
+
 features = tf.tensor(features);
 labels = tf.tensor(labels);
 
-const result = knn(features, labels, tf.tensor(testFeatures[0]), 10);
-console.log('Guess', result, testLabels[0][0])
+testFeatures.forEach((testPoint, i) => {
+  const result = knn(features, labels, tf.tensor(testPoint), 10);
+  const err = (testLabels[i][0]- result) / testLabels[i][0];
+  console.log('Guess', result, testLabels[i][0])
+  console.log('Error', err * 100)
+})
+
+
 
